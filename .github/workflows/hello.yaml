@@ -34,11 +34,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ inputs.name }}"
+    - name: Run script
+      run: |
+        pytest -v src/tests/test_a.py
 
   welcome:
     runs-on: ubuntu-latest
     steps:
     - name: Send welcome
-      run: echo "Welcome"
+      run: echo ${{ secrets.AWS_ACCOUNT_NO}}
