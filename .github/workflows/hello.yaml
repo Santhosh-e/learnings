@@ -23,6 +23,7 @@ jobs:
   # This workflow contains a single job called "greet"
   test_run:
     # The type of runner that the job will run on
+    name: Job test run
     runs-on: ubuntu-latest
     steps:
 
@@ -34,29 +35,30 @@ jobs:
           python-version: 3.12
 
       - name: Cache virtual environment
-        uses: actions/cache@v3
+        id: cache-pip
+        uses: actions/cache@v4
         with:
-          path: venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
-            ${{ runner.os }}-venv-
+            ${{ runner.os }}-pip-
 
       - name: Setup virtual environment
         shell: bash
         run: |
-          python -m venv venv
-          source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
 
       # Runs a single command using the runners shell
       - name: Run script
         run: |
-          pytest -v src/tests/test_a.py
+          pip list
+          pytest -v -s src/tests/test_a.py
           echo Hello, "${{ inputs.name }}"
 
   secret_print:
+    needs: test_run
     runs-on: ubuntu-latest
     steps:
       - name: Send welcome
-        run: echo "${{ secrets.AWS_ACCOUNT_NO }}"
+        run: echo "${{ secrets.ACCOUNT_NO }}"
