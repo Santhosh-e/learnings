@@ -27,38 +27,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v4
-      # Steps represent a sequence of tasks that will be executed as part of the job
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
+    - uses: actions/checkout@v4
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.12
 
-      - name: Cache virtual environment
-        id: cache-pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+    - name: Cache virtual environment
+      id: cache-pip
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-      - name: Setup virtual environment
-        shell: bash
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Setup virtual environment
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
-      # Runs a single command using the runners shell
-      - name: Run script
-        run: |
-          pip list
-          pytest -v -s src/tests/test_a.py
-          echo Hello, "${{ inputs.name }}"
+    # Runs a single command using the runners shell
+    - name: Run script
+      run: |
+        pip list
+        pytest -v -s src/tests/test_a.py
+        echo Hello, "${{ inputs.name }}"
+
+    - name: Generate Allure report
+      run: allure generate --clean --output ./allure-report
 
   secret_print:
     needs: test_run
     runs-on: ubuntu-latest
     steps:
-      - name: Send welcome
-        run: echo "${{ secrets.ACCOUNT_NO }}"
+    - name: Send welcome
+      run: echo "${{ secrets.ACCOUNT_NO }}"
