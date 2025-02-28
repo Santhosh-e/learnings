@@ -56,6 +56,14 @@ jobs:
         pytest -v -s src/tests/test_a.py
         echo Hello, "${{ inputs.name }}"
 
+    - name: Add Homebrew to PATH
+      run: |+
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          
+    - name: Install Allure
+      run: |
+        npm install -g allure-commandline
+
     - name: Generate Allure report
       run: allure generate --clean --output ./allure-report
 
